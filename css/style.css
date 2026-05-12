@@ -1,0 +1,158 @@
+:root {
+    --date-overdue: rgb(200,0,0);
+    --background: rgb(77, 106, 160);
+    --foreground: rgb(183, 194, 214);
+    --outline: rgb(22, 30, 46);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--background);
+}
+
+header, main, footer {
+    background-color: var(--foreground);
+    max-width: 650px;
+    margin: 0 auto;
+    padding: 0.5rem;
+    border: solid 0.15rem var(--outline);
+}
+
+header {
+    height: auto;
+    border-bottom: none;
+}
+
+main {
+    overflow-y: scroll;
+    height: 70vh;
+}
+
+footer {
+    height: auto;
+    border-top: none;
+}
+
+h1, h2 {
+    margin: 0;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+h1 {
+    text-align: center;
+}
+
+p {
+    margin: 0;
+}
+
+p, button, input, label {
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 1rem;
+}
+
+button, input {
+    border: solid 0.1rem var(--outline);
+}
+
+button:hover, input[type = "submit"]:hover {
+    background-color: rgb(225, 225, 225);
+}
+
+button:active, input[type = "submit"]:active {
+    background-color: rgb(200, 200, 200);
+}
+
+form {
+    height: max-content;
+    display: flex;
+    gap: 0.25rem;
+    justify-content: space-between;
+}
+
+input[type = "text"] {
+    width: 100%;
+}
+
+#task-input {
+    margin-top: 0.25rem;
+}
+
+.task {
+    border: solid 0.15rem var(--outline);
+    margin-bottom: 0.15rem;
+    padding: 0 0.5rem;
+    display: grid;
+    grid-template-columns: 3.5rem 3fr 1fr;
+    grid-template-rows: minmax(4rem, auto);
+    align-items: center;
+}
+
+.task-button {
+    height: 3rem;
+    width: 3rem;
+    font-size: 2.5rem;
+}
+
+p.task-desc, p.task-due {
+    font-size: 1.5rem;
+}
+
+p.task-due {
+    text-align: right;
+    align-self: auto;
+}
+
+.task-misc {
+    display: flex;
+    flex-direction: column;
+}
+
+.task-delete, .subtask-delete {
+    margin-left: auto;
+    background-color: rgb(255, 155, 155);
+}
+
+.task-delete:hover, .subtask-delete:hover {
+    background-color: rgb(255, 100, 100);
+}
+
+.task-delete:active, .subtask-delete:active {
+    background-color: rgb(255, 50, 50);
+}
+
+form.subtask-form {
+    margin-bottom: 0.5rem;
+    grid-column: 1 / 4;
+}
+
+.subtask-holder {
+    grid-column: 1 / 4;
+}
+
+.subtask {
+    padding: 0.25rem 0;
+    margin-left: 2rem;
+    border-top: solid 0.1rem var(--outline);
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.subtask-button {
+    width: 2rem;
+    height: 2rem;
+    font-size: 1.5rem;
+}
+
+p.subtask-desc {
+    font-size: 1.1rem;
+}
