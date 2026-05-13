@@ -33,7 +33,7 @@ header {
 
 main {
     overflow-y: scroll;
-    height: 70vh;
+    height: 75vh;
 }
 
 footer {
@@ -127,6 +127,10 @@ p.task-due {
 
 .task-delete:active, .subtask-delete:active {
     background-color: rgb(255, 50, 50);
+}
+
+.late-date {
+    color: var(--date-overdue);
 }
 
 form.subtask-form {

@@ -28,6 +28,9 @@
 
 */
 
+// Day.js object to store current date
+const now = dayjs();
+
 // Total task number to keep task IDs unique
 let totalTasks = 2;
 
@@ -95,10 +98,17 @@ function displayTask(tasks, isSubtask = false) {
             taskMisc.className = "task-misc";
             taskSection.appendChild(taskMisc);
 
-            // Make new due date
+            // Make new due date element
             const taskDue = document.createElement("p");
             taskDue.className = "task-due";
-            taskDue.textContent = currentTask.due;
+            // Format due date with Day.js
+            const dueDate = dayjs(currentTask.due);
+            const formattedDue = dueDate.format("M/D/YYYY");
+            // If due date has been passed, mark late
+            if (dueDate.isBefore(now) && !currentTask.complete) {
+                taskDue.classList.add("late-date");
+            }
+            taskDue.textContent = formattedDue;
             taskMisc.appendChild(taskDue);
 
             // Make new delete button
@@ -168,7 +178,8 @@ function addTask() {
     taskList.push(newTask);
     displayTask([newTask.id]);
 
-    // Save changes to localStorage
+    // Reset the form and save changes to localStorage
+    taskForm.reset();
     saveList();
 }
 
