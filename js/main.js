@@ -193,17 +193,38 @@ function markComplete(task) {
 }
 
 function deleteTask(task, eventParent, listUsed) {
-    // Remove task from list
-    const taskIndex = listUsed.indexOf(task);
-    if (taskIndex !== -1) {
-        listUsed.splice(taskIndex, 1);
+    // Get the type of task to put in the confirmation popup
+    let type;
+    let listChildren = "";
+    if (listUsed === taskList) {
+        type = "task";
+
+        // If the task has subtasks, remind the user that they will also be removed
+        if (task.subtasks.length > 0) {
+            listChildren = "\n\nThis task's subtasks will also be deleted:"
+            task.subtasks.forEach(subtask => {
+                listChildren += `\n- "${subtask.desc}"`;
+            });
+        }
+    } else {
+        type = "subtask";
     }
-    
-    // Remove task from display
-    eventParent.remove();
-    
-    // Save changes to localStorage
-    saveList();
+
+    // Ask the user for confirmation. If the user
+    // clicks OK, delete the task
+    if (confirm(`Are you sure you want to delete this ${type}?\n- "${task.desc}"${listChildren}`)) {
+        // Remove task from list
+        const taskIndex = listUsed.indexOf(task);
+        if (taskIndex !== -1) {
+            listUsed.splice(taskIndex, 1);
+        }
+        
+        // Remove task from display
+        eventParent.remove();
+        
+        // Save changes to localStorage
+        saveList();
+    }
 }
 
 function addTask() {
