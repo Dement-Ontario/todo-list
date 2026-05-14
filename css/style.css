@@ -117,17 +117,33 @@ p.task-due {
     align-self: flex-start;
 }
 
-.task-delete, .subtask-delete {
+.task-delete, .subtask-delete, .confirm-delete {
     margin-left: auto;
+}
+
+.task-delete, .subtask-delete, .confirm-delete button:first-of-type {
     background-color: rgb(255, 155, 155);
 }
 
-.task-delete:hover, .subtask-delete:hover {
+.task-delete:hover, .subtask-delete:hover, .confirm-delete button:first-of-type:hover {
     background-color: rgb(255, 100, 100);
 }
 
-.task-delete:active, .subtask-delete:active {
+.task-delete:active, .subtask-delete:active, .confirm-delete button:first-of-type:active {
     background-color: rgb(255, 50, 50);
+}
+
+.confirm-delete {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 0.1rem;
+    margin-bottom: 0.25rem;
+}
+
+.confirm-delete p {
+    grid-column: span 2;
+    margin-top: 0;
 }
 
 .late-date {
@@ -160,4 +176,8 @@ form.subtask-form {
 
 p.subtask-desc {
     font-size: 1.1rem;
+}
+
+.hidden {
+    display: none;
 }

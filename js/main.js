@@ -193,26 +193,30 @@ function markComplete(task) {
 }
 
 function deleteTask(task, eventParent, listUsed) {
-    // Get the type of task to put in the confirmation popup
-    let type;
-    let listChildren = "";
-    if (listUsed === taskList) {
-        type = "task";
-
-        // If the task has subtasks, remind the user that they will also be removed
-        if (task.subtasks.length > 0) {
-            listChildren = "\n\nThis task's subtasks will also be deleted:"
-            task.subtasks.forEach(subtask => {
-                listChildren += `\n- "${subtask.desc}"`;
-            });
-        }
+    // Hide delete button
+    const delButton = event.target;
+    delButton.classList.add("hidden");
+    
+    // Add confirmation element below the delete button
+    const confirmDiv = document.createElement("div");
+    confirmDiv.className = "confirm-delete";
+    if (!listUsed === taskList) {
+        eventParent.appendChild(confirmDiv);
     } else {
-        type = "subtask";
+        event.target.parentElement.appendChild(confirmDiv);
     }
 
-    // Ask the user for confirmation. If the user
-    // clicks OK, delete the task
-    if (confirm(`Are you sure you want to delete this ${type}?\n- "${task.desc}"${listChildren}`)) {
+    // Add confirmation message
+    const confirmText = document.createElement("p");
+    confirmText.textContent = "Are you sure?";
+    confirmDiv.appendChild(confirmText);
+
+    // Add yes/no buttons inside confirmation element.
+    // If the user clicks yes, delete task.
+    // If the user clicks no, remove the confirmation and unhide the delete button.
+    const yesButton = document.createElement("button");
+    yesButton.textContent = "Yes";
+    yesButton.addEventListener("click", () => {
         // Remove task from list
         const taskIndex = listUsed.indexOf(task);
         if (taskIndex !== -1) {
@@ -224,7 +228,16 @@ function deleteTask(task, eventParent, listUsed) {
         
         // Save changes to localStorage
         saveList();
-    }
+    });
+    confirmDiv.appendChild(yesButton);
+
+    const noButton = document.createElement("button");
+    noButton.textContent = "No";
+    noButton.addEventListener("click", () => {
+        confirmDiv.remove();
+        delButton.classList.remove("hidden");
+    });
+    confirmDiv.appendChild(noButton);
 }
 
 function addTask() {
