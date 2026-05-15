@@ -88,7 +88,7 @@ input[type = "text"] {
 
 .task {
     border: solid 0.15rem var(--outline);
-    margin-bottom: 0.15rem;
+    margin-bottom: 0.25rem;
     padding: 0 0.5rem;
     display: grid;
     grid-template-columns: 3.5rem 3fr 1fr;
@@ -166,6 +166,11 @@ form.subtask-form {
     display: flex;
     align-items: center;
     gap: 0.25rem;
+}
+
+.subtask:last-of-type {
+    border-bottom: solid 0.1rem var(--outline);
+    margin-bottom: 0.5rem;
 }
 
 .subtask-button {
