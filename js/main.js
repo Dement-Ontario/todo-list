@@ -82,7 +82,7 @@ function displayTask(tasks) {
         if (currentTask.complete) {
             taskButton.textContent = "X";
         }
-        taskButton.addEventListener("click", () => markComplete(currentTask));
+        taskButton.addEventListener("click", () => markComplete(currentTask, taskDue));
         taskSection.appendChild(taskButton);
 
         // Make new task description
@@ -177,15 +177,25 @@ function displaySubtask(currentTask, subtaskHolder, currentSubtask) {
     subtaskDiv.appendChild(subtaskDelete);
 }
 
-function markComplete(task) {
+function markComplete(task, date) {
     // If the task is incomplete, mark as complete
     // If the task is complete, mark as incomplete
     if (!task.complete) {
         event.target.innerHTML = "X";
         task.complete = true;
+
+        // Remove the late-date class from the due date element if it exists and is marked late
+        if (date && date.classList.contains("late-date")) {
+            date.classList.remove("late-date");
+        }
     } else {
         event.target.innerHTML = "";
         task.complete = false;
+
+        // Add the late-date class to the due date element if it exists and is not marked late
+        if (date && dayjs(date.textContent).isBefore(now)) {
+            date.classList.add("late-date");
+        }
     }
     
     // Save changes to localStorage
