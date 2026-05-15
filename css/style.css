@@ -33,7 +33,7 @@ header {
 
 main {
     overflow-y: scroll;
-    height: 75vh;
+    height: 74vh;
 }
 
 footer {
@@ -72,10 +72,7 @@ button:active, input[type = "submit"]:active {
 }
 
 form {
-    height: max-content;
-    display: flex;
     gap: 0.25rem;
-    justify-content: space-between;
 }
 
 input[type = "text"] {
@@ -83,7 +80,30 @@ input[type = "text"] {
 }
 
 #task-input {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
     margin-top: 0.25rem;
+}
+
+#task-input input[type = "text"] {
+    grid-column: span 4;
+}
+
+#task-input label, #task-due, #submit-task {
+    grid-row: 2 / 3;
+}
+
+#task-input label {
+    grid-column: 2 / 3;
+}
+
+#task-due {
+    grid-column: 3 / 4;
+}
+
+#submit-task {
+    grid-column: 4 / 5;
 }
 
 .task {
@@ -151,6 +171,7 @@ p.task-due {
 }
 
 form.subtask-form {
+    display: flex;
     margin-bottom: 0.5rem;
     grid-column: 1 / 4;
 }
