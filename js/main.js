@@ -1,32 +1,4 @@
-/* Functions for To-Do List
-
-- Add task
-    Create a new task object and append it to the tasks list. This should also immediately add it
-    to the display
-- Remove task
-    When the user clicks the delete button, delete the chosen task object from the tasks list
-    and remove the task from the display. This should also delete any subtasks under it.
-    Should also add a confirmation screen before removal
-- Add subtask
-    Create a new subtask and append it to the subtasks list in the task object.
-    If there is no subtasks list, create one
-- Remove subtask
-    When the user clicks the delete button, delete the chosen subtask from the subtasks
-    list in the task object. If there are no subtasks in the subtasks list, remove the list
-- Display task
-    Display a singular task. On page load, use recursion to go through 
-    each task in the task list and display its information to the user.
-    Make sure the function can be tweaked later to display subtasks
-- Mark task/subtask complete/incomplete
-    When the user clicks the button that tells you if the task is complete,
-    set the task object completion property to complete if the property is incomplete and vice versa.
-    The display should also immediately reflect this
-- Save list
-    Updates local storage with the newest list. Use this in add/remove and mark complete functions
-- Load list
-    Loads the current list from local storage on page load
-
-*/
+// ---------- Initial Variables ---------- //
 
 // Day.js object to store current date
 const now = dayjs();
@@ -45,12 +17,36 @@ let taskList = [
     }
 ];
 
+
+
+// ---------- Functions ---------- //
+
+/*
+    Function: saveList
+    Parameters: None
+    Description:
+        Saves both the current taskList array and the total amount of
+        tasks created to localStorage. The total tasks variable keeps task IDs unique
+        so it doesn't cause any problems with ID-related HTML tags.
+        
+        This function is called when adding, removing, and marking tasks/subtasks complete.
+*/
 function saveList() {
     const taskListString = JSON.stringify(taskList);
     localStorage.setItem("total", totalTasks);
     localStorage.setItem("tasks", taskListString);
 }
 
+/*
+    Function: loadList
+    Parameters:
+        - The current taskList array
+    Description:
+        Collects each task object's ID from the taskList array and calls the first
+        displayTask in order to load the whole list.
+
+        This function is called on page load.
+*/
 function loadList(taskList) {
     // Store every task's ID in storedTasks and run displayTask with the list
     const storedTasks = [];
@@ -58,9 +54,31 @@ function loadList(taskList) {
         storedTasks.push(element.id);
     });
     
+    // Call first displayTask
     displayTask(storedTasks);
 }
 
+/*
+    Function: displayTask
+    Parameters:
+        - An array of task IDs
+    Description:
+        Creates an element on the DOM for a task and its subtasks, if any.
+        
+        If the argument is an array and is not empty, this function:
+            - removes the first ID from the given array,
+            - finds the task the ID is connected to in the taskList,
+            - adds the necessary HTML elements along with their
+                functions to the DOM's main element,
+            - runs displaySubtask for every subtask in the
+                task object if any exist, and
+            - recursively calls itself with the array it removed the ID from.
+        This will continue running until the array is empty,
+        in which case it will do nothing.
+
+        This function is called when loading from the initial taskList array,
+        in itself to continue recursion, and when adding a new task.
+*/
 function displayTask(tasks) {
     // Check if the tasks argument is both an array and not empty
     if (Array.isArray(tasks) && tasks.length > 0) {
@@ -146,6 +164,18 @@ function displayTask(tasks) {
     }
 }
 
+/*
+    Function: displaySubtask
+    Parameters:
+        - The subtask's parent task
+        - The DOM element that holds the subtask
+        - The current subtask
+    Description:
+        Creates an element inside a task in the DOM for a subtask.
+
+        This function is called when displaying the initial task list
+        to the DOM (if any subtasks exist) and when adding a new subtask.
+*/
 function displaySubtask(currentTask, subtaskHolder, currentSubtask) {
     // Add subtask div
     const subtaskDiv = document.createElement("div");
@@ -177,6 +207,22 @@ function displaySubtask(currentTask, subtaskHolder, currentSubtask) {
     subtaskDiv.appendChild(subtaskDelete);
 }
 
+/*
+    Function: markComplete
+    Parameters:
+        - The task to mark complete/incomplete
+        - The DOM element for the task's due date
+            (undefined for subtasks as they have no due date element)
+    Description:
+        Changes a sub/task object's "complete" property from true to false
+        and vice versa, reflects the change on the button the function
+        was called by, and saves the change to localStorage.
+        This function also adds and removes the class that
+        recolors the DOM element for late due dates if the element exists.
+
+        This function is called exclusively with an event listener for every
+        completion button on every task and subtask.
+*/
 function markComplete(task, date) {
     // If the task is incomplete, mark as complete
     // If the task is complete, mark as incomplete
@@ -202,6 +248,29 @@ function markComplete(task, date) {
     saveList();
 }
 
+/*
+    Function: deleteTask
+    Parameters:
+        - The task to delete from the taskList/subtasks array
+        - The DOM element the task/subtask is shown in
+        - The list of sub/task objects, whether the
+            taskList array itself or a task's subtasks array
+    Description:
+        Deletes a sub/task from both its list and the DOM.
+        This function:
+            - hides the delete button from the DOM and
+                creates an element asking for confirmation,
+            - if "Yes" is clicked:
+                - deletes the sub/task object from its array,
+                - deletes the task's DOM element, and
+                - saves the new taskList array to localStorage, and
+            - if "No" is clicked:
+                - deletes the confirmation element and
+                - unhides the delete button from the DOM
+
+        This function is called exclusively with an event listener for every
+        delete button on every task and subtask.
+*/
 function deleteTask(task, eventParent, listUsed) {
     // Hide delete button
     const delButton = event.target;
@@ -250,17 +319,42 @@ function deleteTask(task, eventParent, listUsed) {
     confirmDiv.appendChild(noButton);
 }
 
+/*
+    Function: addTask
+    Parameters: None
+    Description:
+        Adds a task object to the taskList array and calls displayTask
+        to show the task on the DOM.
+        This function:
+            - adds 1 to the total amount of tasks (for use in task IDs),
+            - takes the input task description and due date values from the form,
+            - creates a new task object,
+            - pushes the task object to the taskList array,
+            - calls displayTask to add a DOM element for the task, and
+            - saves the updated taskList array and total tasks to localStorage.
+        
+        This function is called exclusively with an event handler when
+        submitting the task form.
+*/
 function addTask() {
     // Keep the form from reloading the page and increase total tasks by 1
     event.preventDefault();
     totalTasks++;
 
-    // Grab what was put on the form as a variable and put it in a new task object
+    // Grab what was put on the form as a variable
     const taskDesc = event.target["task-text"].value;
     const taskDue = event.target["task-date"].value;
+
+    // If the task description or due date are empty, call them silly and stop the function
+    if (taskDesc === "" || taskDue === "") {
+        alert("You're silly. Please enter a task description and due date.");
+        return;
+    }
+
+    // Make a new task object with what was on the form
     const newTask = {id: totalTasks, desc: taskDesc, due: taskDue, complete: false, subtasks: []};
 
-    // Push the new task into the task list and add the task to the display
+    // Push the new task into the taskList array and add the task to the display
     taskList.push(newTask);
     displayTask([newTask.id]);
 
@@ -269,12 +363,38 @@ function addTask() {
     saveList();
 }
 
+/*
+    Function: addSubtask
+    Parameters:
+        - The task that the subtask belongs to
+        - The subtask form element
+        - The DOM element that holds the subtasks
+    Description:
+        Pushes a subtask object to the parent task's subtasks array
+        and displays the new subtask under the task on the DOM.
+        This function:
+            - takes the input subtask description from the form,
+            - creates a new subtask object,
+            - pushes the subtask into the task's subtask array,
+            - calls displaySubtask to add the subtask to the DOM, and
+            - saves the updated taskList array to localStorage.
+        
+        This function is called exclusively with an event handler when
+        submitting each task element's subtask form.
+*/
 function addSubtask(task, form, subtaskHolder) {
     // Grab the task description from the form and put it in a new subtask object
     const subtaskDesc = event.target["subtask-text"].value;
+
+    // If the subtask description is empty, call them silly and stop the function
+    if (subtaskDesc === "") {
+        alert("You're silly. Please enter a subtask description.");
+        return;
+    }
+
     const newSubtask = {desc: subtaskDesc, complete: false};
 
-    // Push the new subtask into the subtask list
+    // Push the new subtask into the subtasks array
     task.subtasks.push(newSubtask);
     
     // Create a new subtask for the display
@@ -285,6 +405,10 @@ function addSubtask(task, form, subtaskHolder) {
     saveList();
 }
 
+
+
+// ---------- Initialization ---------- //
+
 // Insert event into task submit button
 const taskForm = document.getElementById("task-input");
 taskForm.onsubmit = addTask;
@@ -293,11 +417,12 @@ taskForm.onsubmit = addTask;
 const storedTotal = localStorage.getItem("total");
 const storedList = JSON.parse(localStorage.getItem("tasks"));
 
-// If both the task total and the task list are in localStorage,
+// If both the task total and the taskList array are in localStorage,
 // set the variables to their stored counterparts
 if (storedTotal !== null && storedList !== null) {
     totalTasks = storedTotal;
     taskList = storedList;
 }
 
+// Load the task list to DOM on page load
 loadList(taskList);
