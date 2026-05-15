@@ -98,8 +98,9 @@ function displayTask(tasks) {
         const taskButton = document.createElement("button");
         taskButton.className = "task-button";
         if (currentTask.complete) {
+            taskButton.ariaLabel = "Complete";
             taskButton.textContent = "X";
-        }
+        } else {taskButton.ariaLabel = "Incomplete";}
         taskButton.addEventListener("click", () => markComplete(currentTask, taskDue));
         taskSection.appendChild(taskButton);
 
@@ -186,8 +187,9 @@ function displaySubtask(currentTask, subtaskHolder, currentSubtask) {
     const subtaskButton = document.createElement("button");
     subtaskButton.className = "subtask-button";
     if (currentSubtask.complete) {
+        subtaskButton.ariaLabel = "Complete";
         subtaskButton.textContent = "X";
-    }
+    } else {subtaskButton.ariaLabel = "Incomplete";}
     subtaskButton.addEventListener("click", () => markComplete(currentSubtask));
     subtaskDiv.appendChild(subtaskButton);
 
@@ -228,6 +230,7 @@ function markComplete(task, date) {
     // If the task is complete, mark as incomplete
     if (!task.complete) {
         event.target.innerHTML = "X";
+        event.target.ariaLabel = "Complete";
         task.complete = true;
 
         // Remove the late-date class from the due date element if it exists and is marked late
@@ -236,6 +239,7 @@ function markComplete(task, date) {
         }
     } else {
         event.target.innerHTML = "";
+        event.target.ariaLabel = "Incomplete";
         task.complete = false;
 
         // Add the late-date class to the due date element if it exists and is not marked late
