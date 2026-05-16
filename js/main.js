@@ -4,18 +4,12 @@
 const now = dayjs();
 
 // Total task number to keep task IDs unique
-let totalTasks = 2;
+let totalTasks = 0;
 
+// Task object format: {id(number), desc(string), due(string), complete(bool), subtasks(array)}
+// Subtask object format: {desc(string), complete(bool)}
 // Array of task objects
-let taskList = [
-    {id: 1, desc: "Do something smart", due:"1987-12-12", complete: false, subtasks: []},
-    {id: 2, desc: "Do something stupid", due:"1999-04-26", complete: true,
-        subtasks: [
-            {desc: "Jump off a bridge or something", complete: true},
-            {desc: "Do a flip", complete: false}
-        ]
-    }
-];
+let taskList = [];
 
 
 
